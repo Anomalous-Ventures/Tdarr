@@ -6,8 +6,9 @@ FROM haveagitgat/tdarr:2.26.01
 # - TypeError: Cannot read properties of undefined (reading 'on')
 # - TypeError: k.split is not a function
 #
-# Root cause: Missing null/undefined checks in fileScanners.js and fileScanner.js
-# when accessing library configuration properties
+# Root cause: Missing null/undefined checks and type handling in fileScanners.js
+# - Library config properties like foldersToIgnore can be arrays instead of strings
+# - Missing null checks when library doesn't exist in database
 
 COPY Tdarr_Server/srcug/fileScanners.js /app/Tdarr_Server/srcug/fileScanners.js
 COPY Tdarr_Server/srcug/commonModules/fileScanner/fileScanner.js /app/Tdarr_Server/srcug/commonModules/fileScanner/fileScanner.js
