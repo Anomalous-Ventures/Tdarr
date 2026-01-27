@@ -1,0 +1,32 @@
+# Tdarr Node-only image
+# Based on official haveagitgat/tdarr_node (no server component)
+# Used for external worker nodes that connect to a central Tdarr server
+
+FROM haveagitgat/tdarr_node:2.26.01
+
+# Environment variables for node configuration
+# These can be overridden at runtime
+ENV PUID="1000" \
+    PGID="1000" \
+    TZ="Etc/UTC" \
+    UMASK="002" \
+    NODE_PORT="8267" \
+    serverIP="" \
+    serverPort="8266" \
+    nodeID="" \
+    nodeIP="0.0.0.0" \
+    inContainer="true"
+
+# AMD GPU (VAAPI) support - install Mesa VAAPI drivers
+# This enables hardware-accelerated encoding on AMD GPUs
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    mesa-va-drivers \
+    vainfo \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
+# Expose node port
+EXPOSE ${NODE_PORT}
+
+# Use s6 init system (inherited from base image)
+ENTRYPOINT ["/init"]
